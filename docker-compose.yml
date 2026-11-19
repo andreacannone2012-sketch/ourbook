@@ -1,0 +1,19 @@
+services:
+  ourbooks:
+    # Sostituisci OWNER/REPO con utente GitHub e nome repository, in minuscolo.
+    image: ghcr.io/OWNER/REPO:latest
+    container_name: ourbooks
+    restart: unless-stopped
+    init: true
+    ports:
+      # Porta esterna 8431; porta interna dell'app 7860.
+      - "8431:7860"
+    environment:
+      NODE_ENV: production
+      PORT: "7860"
+    volumes:
+      # I libri scaricati restano disponibili anche dopo aggiornamenti o riavvii.
+      - ourbooks_downloads:/app/downloads
+
+volumes:
+  ourbooks_downloads:

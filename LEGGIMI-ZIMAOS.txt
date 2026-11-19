@@ -1,0 +1,62 @@
+OURBOOKS — PUBBLICAZIONE SU GITHUB E INSTALLAZIONE SU ZIMAOS
+==============================================================
+
+Questo pacchetto usa lo stesso flusso di Lavagna AI:
+GitHub Actions costruisce l'immagine Docker e la pubblica su GHCR.
+ZimaOS scarica poi l'immagine tramite Docker Compose.
+
+1. CREA IL REPOSITORY GITHUB
+   - Vai su GitHub e crea un repository, ad esempio "ourbooks".
+   - Carica TUTTO il contenuto di questa cartella, compresa la cartella
+     nascosta .github/workflows.
+   - Usa il branch "main".
+
+2. ATTENDI LA BUILD
+   - Apri la scheda Actions del repository.
+   - Il workflow "Build e pubblica OurBooks su GHCR" parte al push.
+   - Al termine viene pubblicata un'immagine per linux/amd64 e linux/arm64.
+
+3. RENDI PUBBLICA L'IMMAGINE
+   - Apri il repository GitHub e vai su Packages.
+   - Seleziona il pacchetto OurBooks e apri Package settings.
+   - Cambia la visibilità in Public.
+   - Questa operazione va fatta solo la prima volta.
+
+4. PREPARA IL COMPOSE
+   - Apri docker-compose.yml.
+   - Sostituisci OWNER/REPO con il tuo utente GitHub e il nome del repository,
+     entrambi in minuscolo.
+   - Esempio: ghcr.io/mariorossi/ourbooks:latest
+   - Non inserire password degli editori nel repository o nel Compose.
+
+5. INSTALLA SU ZIMAOS
+   - Apri la sezione Docker/Compose di ZimaOS.
+   - Crea una nuova applicazione Compose.
+   - Incolla il contenuto di docker-compose.yml e avvia.
+   - Apri http://IP-DEL-NAS:8431
+
+DATI E AGGIORNAMENTI
+   - I file scaricati sono salvati nel volume Docker "ourbooks_downloads".
+   - Il volume sopravvive al riavvio e alla ricreazione del container.
+   - Per aggiornare: carica le modifiche su GitHub, attendi che Actions
+     pubblichi :latest, poi aggiorna/ricrea lo stack in ZimaOS.
+
+FEDORA
+   - La build viene creata in un container Linux Debian slim e funziona
+     anche su host Fedora tramite Docker o Podman.
+   - Se esegui Compose direttamente su Fedora con SELinux e usi in futuro
+     una bind mount al posto del volume nominato, potrebbe essere necessario
+     aggiungere l'etichetta :Z al percorso montato. Il volume nominato qui
+     configurato evita di dover gestire manualmente questo aspetto.
+
+NOTA SUL PROVIDER SANOMA
+   - Nell'archivio sorgente fornito mancano ancora:
+       providers/src/sanoma/create-pdf.js
+       providers/src/sanoma/workers.js
+   - Il container può essere costruito e avviato, ma il provider Sanoma
+     continuerà a non caricarsi finché quei moduli non saranno ripristinati
+     e verificati. La correzione di packaging non risolve tale problema.
+
+NOTA SULLA VERSIONE ZANICHELLI
+   - È incluso il fix Linux per l'import di textlayer.js con il nome
+     esatto del file, rispettando maiuscole e minuscole.
