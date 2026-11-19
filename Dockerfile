@@ -14,13 +14,13 @@ RUN apt-get update \
     ca-certificates \
   && rm -rf /var/lib/apt/lists/*
 
-COPY package*.json ./
-RUN npm ci --omit=dev --no-audit --no-fund
-
-COPY . .
-
 ENV NODE_ENV=production
 ENV PORT=7860
+
+COPY package*.json ./
+RUN npm install --omit=dev --no-audit --no-fund
+
+COPY . .
 
 EXPOSE 7860
 
