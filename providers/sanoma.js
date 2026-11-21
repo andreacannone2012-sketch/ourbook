@@ -16,7 +16,6 @@ import {
 } from './src/sanoma/parser.js';
 
 import { createPdf } from './src/sanoma/create-pdf.js';
-import { runPageWorker } from './src/sanoma/workers.js';
 
 export async function run(options = {}) {
   const argv = yargs(process.argv.slice(2))
@@ -274,21 +273,4 @@ export async function run(options = {}) {
   console.log(
     `OURBOOKS_OUTPUT:${outFilePath}`
   );
-}
-
-if (process.env.OURBOOKS_SANOMA_PAGE_WORKER === '1') {
-  process.on('uncaughtException', error => {
-    console.error('Errore fatale worker Sanoma:', error);
-    process.exit(1);
-  });
-
-  process.on('unhandledRejection', error => {
-    console.error('Promise non gestita worker Sanoma:', error);
-    process.exit(1);
-  });
-
-  runPageWorker().catch(error => {
-    console.error('Errore worker Sanoma:', error);
-    process.exit(1);
-  });
 }
